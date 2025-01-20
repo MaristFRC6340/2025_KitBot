@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -33,11 +35,18 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
+  // Other Fields
+  // Speed Control
+  private double SPEED_CONTROL = 0.25;
+
+ //op
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -46,15 +55,16 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
+    // Added Speed Control for testing. Local Field in this class
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*SPEED_CONTROL, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*SPEED_CONTROL, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*SPEED_CONTROL, OIConstants.kDriveDeadband),
+                false),
             m_robotDrive));
   }
 
