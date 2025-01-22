@@ -79,6 +79,8 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
+    public static final double kDriverLTriggerDeadband = 0.2;
+    public static final double kDriverRTriggerDeadband = 0.2;
   }
 
   public static final class AutoConstants {
@@ -100,10 +102,15 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
   public static final class RollerConstants {
-    public static final int ROLLER_MOTOR_ID = 5;
-    public static final int ROLLER_MOTOR_CURRENT_LIMIT=60;
+    public static final int UPPER_MOTOR_ID = 7;
+    public static final int LOWER_MOTOR_ID = 8;
+    public static final int ROLLER_MOTOR_CURRENT_LIMIT=20;
     public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
     public static final double ROLLER_EJECT_VALUE = 0.44;
+
+    public static final int WRIST_MOTOR_ID = 9;
+    public static final int WRIST_MOTOR_CURRENT_LIMIT = 40;
+
   }
 
 }

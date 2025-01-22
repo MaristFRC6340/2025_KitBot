@@ -21,11 +21,15 @@ import frc.robot.Constants.RollerConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -38,8 +42,17 @@ public class RobotContainer {
 
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
+  private final WristSubsystem wristSubsystem = new WristSubsystem();
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+
+  // Create Triggers for Bindings
+  Trigger driverLTrigger = new Trigger(() -> m_driverController.getLeftTriggerAxis()>OIConstants.kDriverLTriggerDeadband);
+  Trigger driverRTrigger = new Trigger(() -> m_driverController.getRightTriggerAxis()>OIConstants.kDriverRTriggerDeadband);
+
+  Trigger driverA = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+  Trigger driverY = new JoystickButton(m_driverController, XboxController.Button.kY.value);
+
 
   // Other Fields
   // Speed Control
@@ -57,6 +70,7 @@ public class RobotContainer {
     // Configure default commands
     // Added Speed Control for testing. Local Field in this class
     m_robotDrive.setDefaultCommand(
+        
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
@@ -82,7 +96,19 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
-  }
+
+    // Intake Controls
+    driverLTrigger.whileTrue(rollerSubsystem.getSetSpeedCommand(0.9));
+    driverRTrigger.whileTrue(rollerSubsystem.getSetSpeedCommand(-0.9));
+
+    //driverLTrigger.whileTrue(rollerSubsystem.getSetSpeedCommand( () -> m_driverController.getLeftTriggerAxis() ));
+    //driverRTrigger.whileTrue(rollerSubsystem.getSetSpeedCommand( () -> m_driverController.getRightTriggerAxis() ));
+    
+    // Wrist Controls
+    driverY.onTrue(wristSubsystem.deltaPositionCommand(1));
+    driverA.onTrue(wristSubsystem.deltaPositionCommand(-1));
+
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
