@@ -102,6 +102,7 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
   public static final class RollerConstants {
+    public static final int ELEVATOR_MOTOR_ID = 6;
     public static final int UPPER_MOTOR_ID = 7;
     public static final int LOWER_MOTOR_ID = 8;
     public static final int ROLLER_MOTOR_CURRENT_LIMIT=20;
