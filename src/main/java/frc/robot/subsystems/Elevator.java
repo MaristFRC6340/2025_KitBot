@@ -19,6 +19,8 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutVelocity;
+import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
@@ -30,7 +32,13 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RollerConstants;
+
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 
 public class Elevator extends SubsystemBase {
    private SparkMax elevatorMotor;
@@ -38,10 +46,14 @@ public class Elevator extends SubsystemBase {
    private SparkClosedLoopController closedLoopController;
    private RelativeEncoder encoder;
    private int targetPosition;
+   
 
-   Mechanism2d mech=new Mechanism2d(50, 50);
-   MechanismRoot2d root = mech.getRoot("root",25,22);
-   MechanismLigament2d lig;
+   
+   MutVoltage appliedVoltage = Volts.mutable(0);
+   MutDistance distance = Meters.mutable(0);
+   MutLinearVelocity vel = MetersPerSecond.mutable(0);
+
+    public SysIdRoutine routine;
 
 
   /** Creates a new Elevator. */
@@ -70,7 +82,12 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     SmartDashboard.setDefaultNumber("Elevator/position", 0);
-
+   routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(this::setVoltage, log->{
+        log.motor("elevator")
+        .voltage(appliedVoltage.mut_replace(elevatorMotor.get()*RobotController.getBatteryVoltage(), Volts))
+          .linearPosition(distance.mut_replace(encoder.getPosition(),Meters))
+          .linearVelocity(vel.mut_replace(encoder.getVelocity(), MetersPerSecond));
+      },this));
 
   }
 

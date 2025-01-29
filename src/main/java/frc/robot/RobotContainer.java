@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -73,11 +74,7 @@ public class RobotContainer {
 
  //op
 
-  //mechanism graphics
-   Mechanism2d mech=new Mechanism2d(50, 50);
-   MechanismRoot2d root = mech.getRoot("root",25,22);
-   MechanismLigament2d elevator;
-   
+  
 
   
   /**
@@ -91,9 +88,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-      // SysIdRoutine s = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(elevatorSubsystem::setVoltage, log->{
-      //   log.motor("elevator").voltage()
-      // }))
+    
     // Configure default commands
     // Added Speed Control for testing. Local Field in this class
     m_robotDrive.setDefaultCommand(
@@ -139,6 +134,8 @@ public class RobotContainer {
 
     driverLButton.onTrue(elevatorSubsystem.deltaPositionCommand(10));
     driverRButton.onTrue(elevatorSubsystem.deltaPositionCommand(-10));
+
+     //new JoystickButton(m_driverController, XboxController.Button.kB.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kForward));
 
     }
 
