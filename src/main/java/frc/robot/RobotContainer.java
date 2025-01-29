@@ -14,6 +14,11 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -22,12 +27,14 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.SimulationSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -45,6 +52,7 @@ public class RobotContainer {
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
   private final WristSubsystem wristSubsystem = new WristSubsystem();
   private final Elevator elevatorSubsystem = new Elevator();
+  private final SimulationSubsystem sim = new SimulationSubsystem(()->elevatorSubsystem.getPosition(), ()->wristSubsystem.getPosition());
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -64,14 +72,28 @@ public class RobotContainer {
   private double SPEED_CONTROL = 0.25; // Super Slow Mode for testing another test
 
  //op
+
+  //mechanism graphics
+   Mechanism2d mech=new Mechanism2d(50, 50);
+   MechanismRoot2d root = mech.getRoot("root",25,22);
+   MechanismLigament2d elevator;
+   
+
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+
+
+
     // Configure the button bindings
     configureButtonBindings();
 
+      // SysIdRoutine s = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(elevatorSubsystem::setVoltage, log->{
+      //   log.motor("elevator").voltage()
+      // }))
     // Configure default commands
     // Added Speed Control for testing. Local Field in this class
     m_robotDrive.setDefaultCommand(
@@ -165,4 +187,6 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
+
+  
 }

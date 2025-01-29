@@ -18,7 +18,16 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RollerConstants;
@@ -29,6 +38,11 @@ public class Elevator extends SubsystemBase {
    private SparkClosedLoopController closedLoopController;
    private RelativeEncoder encoder;
    private int targetPosition;
+
+   Mechanism2d mech=new Mechanism2d(50, 50);
+   MechanismRoot2d root = mech.getRoot("root",25,22);
+   MechanismLigament2d lig;
+
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -55,7 +69,7 @@ public class Elevator extends SubsystemBase {
 
     elevatorMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    SmartDashboard.setDefaultNumber("Elevator Position", 0);
+    SmartDashboard.setDefaultNumber("Elevator/position", 0);
 
 
   }
@@ -63,6 +77,8 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
+    SmartDashboard.putNumber("Elevator/encoderposition",encoder.getPosition());
   }
 
   public void setPosition(double position) {
@@ -87,6 +103,16 @@ public class Elevator extends SubsystemBase {
     });
     
 
+  }
+  public void setVoltage(Voltage voltage){
+    elevatorMotor.setVoltage(voltage);
+  }
+  // public void getVoltage(){
+  //   return RobotController.getBatteryVoltage()*elevatorMotor.get();
+  // }
+
+  public double getPosition(){
+    return elevatorMotor.getEncoder().getPosition();
   }
 
 }
