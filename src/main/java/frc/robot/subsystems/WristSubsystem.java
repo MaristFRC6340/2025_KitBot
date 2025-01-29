@@ -29,7 +29,7 @@ public class WristSubsystem extends SubsystemBase {
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
 
-  private int targetPosition;
+  private double targetPosition;
 
 
   /** Creates a new WristSubsystem. */
@@ -68,6 +68,8 @@ public class WristSubsystem extends SubsystemBase {
     wristMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     // Numbers for Smart Dashboard
+    targetPosition = encoder.getPosition();
+    setPosition(targetPosition);
     SmartDashboard.setDefaultNumber("Target Position", 0);
 
     

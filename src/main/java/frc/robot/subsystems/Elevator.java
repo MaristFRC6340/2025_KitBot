@@ -96,6 +96,10 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     
     SmartDashboard.putNumber("Elevator/encoderposition",encoder.getPosition());
+    SmartDashboard.putNumber("Elevator/busvoltage",RobotController.getBatteryVoltage());
+
+    SmartDashboard.putNumber("Elevator/voltage",elevatorMotor.get());
+
   }
 
   public void setPosition(double position) {
@@ -122,7 +126,9 @@ public class Elevator extends SubsystemBase {
 
   }
   public void setVoltage(Voltage voltage){
-    elevatorMotor.setVoltage(voltage);
+    if(getPosition()<170 && getPosition()>20) {
+      elevatorMotor.setVoltage(voltage);
+    }
   }
   // public void getVoltage(){
   //   return RobotController.getBatteryVoltage()*elevatorMotor.get();
