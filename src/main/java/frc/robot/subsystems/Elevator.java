@@ -110,7 +110,14 @@ public class Elevator extends SubsystemBase {
     // For Debugging
     
     return this.runOnce(() -> {
-      this.setPosition(position);
+      targetPosition = (int)position;
+      if (targetPosition < 0) { // Bottom of the Elevator
+        targetPosition = 0;
+      }
+      if (targetPosition > 200) { // Top of Elevator
+        targetPosition = 200;
+      }
+      this.setPosition(targetPosition);
       SmartDashboard.putNumber("Elevator Position", encoder.getPosition());
     });
   }
@@ -119,6 +126,13 @@ public class Elevator extends SubsystemBase {
     
     return this.runOnce( () -> {
       targetPosition += deltaPos;
+      // Limits - Software stop
+      if (targetPosition < 0) { // Bottom of the Elevator
+        targetPosition = 0;
+      }
+      if (targetPosition > 200) { // Top of Elevator
+        targetPosition = 200;
+      }
       this.setPosition(targetPosition);
       SmartDashboard.putNumber("Elevator Position", targetPosition);
     });

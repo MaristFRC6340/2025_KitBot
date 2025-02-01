@@ -30,6 +30,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SimulationSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -67,10 +68,13 @@ public class RobotContainer {
   Trigger driverLButton = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
   Trigger driverRButton = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
 
+  Trigger driverDpadUp = new Trigger(() -> m_driverController.getPOV()==0);
+  Trigger driverDpadDown = new Trigger(() -> m_driverController.getPOV() == 180);
+
 
   // Other Fields
   // Speed Control
-  private double SPEED_CONTROL = 0.25; // Super Slow Mode for testing another test
+  private double SPEED_CONTROL = 0.25; // Super Slow Mode : 0.25
 
  //op
 
@@ -134,6 +138,22 @@ public class RobotContainer {
 
     driverLButton.onTrue(elevatorSubsystem.deltaPositionCommand(10));
     driverRButton.onTrue(elevatorSubsystem.deltaPositionCommand(-10));
+
+    // Presets
+    // Dpad Down: Elevator to 0 Position, Intake to Reef Station Position
+    // Make Constants Later . . .
+    driverDpadDown.onTrue(new ParallelCommandGroup(
+      elevatorSubsystem.getSetPositionCommand(20),  // down Position
+      wristSubsystem.getSetPositionCommand(0)      // Reef Intake Position
+    ));
+
+    // Dpad Up: L2 Position
+    driverDpadUp.onTrue(new ParallelCommandGroup(
+      elevatorSubsystem.getSetPositionCommand(90), // L2 Position
+      wristSubsystem.getSetPositionCommand(-13)             // Angle for L2 and L3
+    ));
+
+    //TODO: Presets for L3 Position, L1 Position
 
      //new JoystickButton(m_driverController, XboxController.Button.kB.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kForward));
      //new JoystickButton(m_driverController, XboxController.Button.kX.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kReverse));

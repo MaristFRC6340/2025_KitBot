@@ -63,7 +63,7 @@ public class WristSubsystem extends SubsystemBase {
       .p(0.1)
       .i(0)
       .d(0)
-      .outputRange(-0.75, .75);
+      .outputRange(-0.5, .5);
 
     wristMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
@@ -91,7 +91,8 @@ public class WristSubsystem extends SubsystemBase {
     // For Debugging
     
     return this.runOnce(() -> {
-      this.setPosition(position);
+      targetPosition = position;  
+      this.setPosition(targetPosition);
       SmartDashboard.putNumber("TargetPosition", encoder.getPosition());
     });
   }
