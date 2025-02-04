@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RollerConstants;
@@ -35,22 +37,35 @@ public class P3Elevator extends SubsystemBase{
         // config doing config things
         motorConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40);
 
-        pid = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(1, 1));
-        elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
-
+        pid = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(5, 5));
+        elevatorFeedforward = new ElevatorFeedforward(.18166, 0.20667, 0.0021352,0.0002943);
+        pid.setGoal(0);
+        
     }
 
     public void periodic() {
+         SmartDashboard.putNumber("Elevator/encoderposition",encoder.getPosition());
+    SmartDashboard.putNumber("Elevator/busvoltage",RobotController.getBatteryVoltage());
+
+    SmartDashboard.putNumber("Elevator/voltage",elevatorMotor.get());
+    SmartDashboard.putNumber("Elevator/appliedoutput",elevatorMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator/PID/goal",pid.getGoal().position);
+    SmartDashboard.putNumber("Elevator/PID/curSetPoint",pid.getSetpoint().position);
+    //SmartDashboard.putNumber("Elevator/PID/vel");
 
     }
 
     public Command goToPosition(double position) {
-        return this.run(() -> {
+        pid.setGoal(position);
+    
+        return this.runEnd(() -> {
             elevatorMotor.set(
-                pid.calculate(encoder.getPosition(), position)+elevatorFeedforward.calculate(pid.getSetpoint().velocity)
+                pid.calculate(encoder.getPosition())+elevatorFeedforward.calculate(pid.getSetpoint().velocity)
                 // calculates next output of PID based on position of encoder + parameter,
                 // adds it to the feedforward based on pid's vel
                 );
+        },()->{
+            elevatorMotor.set(0);
         });
     }
 

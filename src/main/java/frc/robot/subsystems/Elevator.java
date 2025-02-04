@@ -84,7 +84,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.setDefaultNumber("Elevator/position", 0);
    routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(this::setVoltage, log->{
         log.motor("elevator")
-        .voltage(appliedVoltage.mut_replace(elevatorMotor.get()*RobotController.getBatteryVoltage(), Volts))
+        .voltage(appliedVoltage.mut_replace(elevatorMotor.getAppliedOutput()*RobotController.getBatteryVoltage(), Volts))
           .linearPosition(distance.mut_replace(encoder.getPosition(),Meters))
           .linearVelocity(vel.mut_replace(encoder.getVelocity(), MetersPerSecond));
       },this));
@@ -99,6 +99,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/busvoltage",RobotController.getBatteryVoltage());
 
     SmartDashboard.putNumber("Elevator/voltage",elevatorMotor.get());
+    SmartDashboard.putNumber("Elevator/appliedoutput",elevatorMotor.getAppliedOutput());
+
 
   }
 
@@ -140,9 +142,8 @@ public class Elevator extends SubsystemBase {
 
   }
   public void setVoltage(Voltage voltage){
-    if(getPosition()<170 && getPosition()>20) {
       elevatorMotor.setVoltage(voltage);
-    }
+    
   }
   // public void getVoltage(){
   //   return RobotController.getBatteryVoltage()*elevatorMotor.get();
