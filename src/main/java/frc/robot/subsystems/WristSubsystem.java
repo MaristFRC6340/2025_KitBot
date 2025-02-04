@@ -63,13 +63,13 @@ public class WristSubsystem extends SubsystemBase {
       .p(0.1)
       .i(0)
       .d(0)
-      .outputRange(-0.5, .5);
+      .outputRange(-0.75, .75);
 
     wristMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     // Numbers for Smart Dashboard
     targetPosition = encoder.getPosition();
-    setPosition(targetPosition);
+    //setPosition(targetPosition);
     SmartDashboard.setDefaultNumber("Target Position", 0);
 
     

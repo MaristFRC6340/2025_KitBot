@@ -27,6 +27,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.P3Elevator;
 import frc.robot.subsystems.SimulationSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,7 +55,7 @@ public class RobotContainer {
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
   private final WristSubsystem wristSubsystem = new WristSubsystem();
   private final Elevator elevatorSubsystem = new Elevator();
-  private final SimulationSubsystem sim = new SimulationSubsystem(()->elevatorSubsystem.getPosition(), ()->wristSubsystem.getPosition());
+  //private final SimulationSubsystem sim = new SimulationSubsystem(()->elevatorSubsystem.getPosition(), ()->wristSubsystem.getPosition());
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -136,12 +137,16 @@ public class RobotContainer {
     driverY.onTrue(wristSubsystem.deltaPositionCommand(1));
     driverA.onTrue(wristSubsystem.deltaPositionCommand(-1));
 
+    
+    // new JoystickButton(m_driverController, XboxController.Button.kB.value).whileTrue(elevatorSubsystem.goToPosition(50));
+    // new JoystickButton(m_driverController, XboxController.Button.kX.value).whileTrue(elevatorSubsystem.goToPosition(0));
+
     driverLButton.onTrue(elevatorSubsystem.deltaPositionCommand(10));
     driverRButton.onTrue(elevatorSubsystem.deltaPositionCommand(-10));
 
     // Presets
     // Dpad Down: Elevator to 0 Position, Intake to Reef Station Position
-    // Make Constants Later . . .
+    // // Make Constants Later . . .
     driverDpadDown.onTrue(new ParallelCommandGroup(
       elevatorSubsystem.getSetPositionCommand(20),  // down Position
       wristSubsystem.getSetPositionCommand(0)      // Reef Intake Position
@@ -153,16 +158,12 @@ public class RobotContainer {
       wristSubsystem.getSetPositionCommand(-13)             // Angle for L2 and L3
     ));
 
-    
-    // new JoystickButton(m_driverController, XboxController.Button.kB.value).whileTrue(elevatorSubsystem.goToPosition(50));
-    // new JoystickButton(m_driverController, XboxController.Button.kX.value).whileTrue(elevatorSubsystem.goToPosition(50));
-
     //TODO: Presets for L3 Position, L1 Position
 
-    //  new JoystickButton(m_driverController, XboxController.Button.kB.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kForward));
-    //  new JoystickButton(m_driverController, XboxController.Button.kX.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kReverse));
-    //  new JoystickButton(m_driverController, XboxController.Button.kY.value).whileTrue(elevatorSubsystem.routine.dynamic(Direction.kForward));
-    //  new JoystickButton(m_driverController, XboxController.Button.kA.value).whileTrue(elevatorSubsystem.routine.dynamic(Direction.kReverse));
+     //new JoystickButton(m_driverController, XboxController.Button.kB.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kForward));
+     //new JoystickButton(m_driverController, XboxController.Button.kX.value).whileTrue(elevatorSubsystem.routine.quasistatic(Direction.kReverse));
+     //new JoystickButton(m_driverController, XboxController.Button.kY.value).whileTrue(elevatorSubsystem.routine.dynamic(Direction.kForward));
+     //new JoystickButton(m_driverController, XboxController.Button.kA.value).whileTrue(elevatorSubsystem.routine.dynamic(Direction.kReverse));
 
     }
 
