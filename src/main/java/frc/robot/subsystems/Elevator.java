@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutVelocity;
 import edu.wpi.first.units.measure.MutLinearVelocity;
@@ -39,7 +40,7 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-
+@Logged
 public class Elevator extends SubsystemBase {
    private SparkMax elevatorMotor;
    private SparkMaxConfig motorConfig;
