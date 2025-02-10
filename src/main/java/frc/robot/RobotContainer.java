@@ -28,6 +28,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.P3Elevator;
 import frc.robot.subsystems.SimulationSubsystem;
 import frc.robot.subsystems.WristSubsystem;
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final WristSubsystem wristSubsystem = new WristSubsystem();
   private final Elevator elevatorSubsystem = new Elevator();
   private final SimulationSubsystem sim = new SimulationSubsystem(()->elevatorSubsystem.getPosition(), ()->wristSubsystem.getPosition());
+  private final LEDSubsystem leds;
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -88,12 +90,14 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    leds = new LEDSubsystem();
 
 
 
 
     // Configure the button bindings
     configureButtonBindings();
+    leds.setDefaultCommand(leds.runPattern(leds.gradient));
 
     
     // Configure default commands
